@@ -1,11 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { ShoppingCart, Package, Heart, User, Star, TrendingUp } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user } = useAuth();
   const { getTotalItems, getTotalPrice } = useCart();
 
   const stats = [

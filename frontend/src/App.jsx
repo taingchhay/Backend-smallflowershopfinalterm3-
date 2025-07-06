@@ -1,12 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-import Navbar from './components/common/Navbar';
+import Navbar from './components/common/UserNavbar';
 import Footer from './components/common/Footer';
 import Home from './pages/Home';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
+import Login from './pages/client/Login';
+import Register from './pages/client/Register';
 import Dashboard from './pages/client/Dashboard';
 import Shop from './pages/client/Shop';
 import Cart from './pages/client/Cart';
@@ -18,7 +17,6 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 
 function App() {
   return (
-    <AuthProvider>
       <CartProvider>
         <Router>
           <div className="min-h-screen bg-gradient-pink">
@@ -69,7 +67,6 @@ function App() {
           </div>
         </Router>
       </CartProvider>
-    </AuthProvider>
   );
 }
 
