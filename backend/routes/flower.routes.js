@@ -3,14 +3,10 @@ import {
     getFlowers, 
     createFlower 
 } from '../controllers/flower.controller';
-import { 
-    authenticate, 
-    authorize 
-} from '../middleware/auth';
 
 const router = express.Router();
 
 router.get('/', getFlowers);
-router.post('/', authenticate, authorize('admin'), createFlower);
+router.post('/', createFlower);
 
 export default router;

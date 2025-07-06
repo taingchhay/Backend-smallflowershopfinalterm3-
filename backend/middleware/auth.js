@@ -14,10 +14,3 @@ const authenticate = (req, res, next) => {
         res.status(401).json({ message: 'Invalid token' });
     }
 };
-
-const authorize = (role) => (req, res, next) => {
-    if (req.user.role !== role) {
-        return res.status(403).json({ message: 'Forbidden' });
-    }
-    next();
-};

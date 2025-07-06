@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { User, Mail, Lock, Eye, EyeOff, Flower2 } from 'lucide-react';
 
 const Register = () => {
@@ -15,7 +14,6 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {

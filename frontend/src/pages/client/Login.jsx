@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { Mail, Lock, Eye, EyeOff, Flower2 } from 'lucide-react';
 
 const Login = () => {
@@ -12,7 +11,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -26,8 +24,6 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    const result = await login(formData);
     
     if (result.success) {
       navigate('/dashboard');
