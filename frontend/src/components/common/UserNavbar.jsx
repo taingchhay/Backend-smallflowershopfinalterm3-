@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
 import { Flower2, User, ShoppingCart, Menu, X, LogOut } from 'lucide-react';
 
 const UserNavbar = ({ user, logout }) => {
-  const { getTotalItems } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const handleCartUpdate = (newCartItems) => {
+    setCartItems(newCartItems);
+    setTotalItems(newCartItems.reduce((acc, item) => acc + item.quantity, 0));
+    setTotalPrice(newCartItems.reduce((acc, item) => acc + item.price * item.quantity, 0));
+  };
+
+  const getTotalItems = () => {
+    return cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  };
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -38,11 +49,9 @@ const UserNavbar = ({ user, logout }) => {
             
             <Link to="/cart" className="relative text-gray-700 hover:text-baby-pink-500 transition-colors">
               <ShoppingCart className="h-6 w-6" />
-              {getTotalItems() > 0 && (
-                <span className="absolute -top-2 -right-2 bg-baby-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {getTotalItems()}
-                </span>
-              )}
+              <span className="absolute -top-2 -right-2 bg-baby-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {getTotalItems()}
+              </span>
             </Link>
 
             {/* Profile Dropdown */}

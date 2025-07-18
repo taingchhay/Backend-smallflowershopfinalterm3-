@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { CartProvider } from './context/CartContext';
 import Navbar from './components/common/UserNavbar';
 import Footer from './components/common/Footer';
 import Home from './pages/Home';
@@ -17,7 +16,7 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 
 function App() {
   return (
-      <CartProvider>
+    <>
         <Router>
           <div className="min-h-screen bg-gradient-pink">
             <Navbar />
@@ -30,43 +29,43 @@ function App() {
                 
                 {/* User Protected Routes */}
                 <Route path="/dashboard" element={
-                  <ProtectedRoute role="user">
+                  // <ProtectedRoute>
                     <Dashboard />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 } />
                 <Route path="/cart" element={
-                  <ProtectedRoute role="user">
+                  // <ProtectedRoute>
                     <Cart />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 } />
                 <Route path="/orders" element={
-                  <ProtectedRoute role="user">
+                  // <ProtectedRoute>
                     <Orders />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 } />
                 
                 {/* Admin Protected Routes */}
                 <Route path="/admin" element={
-                  <ProtectedRoute role="admin">
+                  // <ProtectedRoute>
                     <AdminDashboard />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 } />
                 <Route path="/admin/flowers" element={
-                  <ProtectedRoute role="admin">
+                  // <ProtectedRoute>
                     <AdminFlowers />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 } />
                 <Route path="/admin/orders" element={
-                  <ProtectedRoute role="admin">
+                  // <ProtectedRoute>
                     <AdminOrders />
-                  </ProtectedRoute>
+                  // </ProtectedRoute>
                 } />
               </Routes>
             </main>
             <Footer />
           </div>
         </Router>
-      </CartProvider>
+    </>
   );
 }
 

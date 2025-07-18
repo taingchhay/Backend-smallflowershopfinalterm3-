@@ -234,13 +234,6 @@ const AdminFlowers = () => {
     }
   };
 
-  const handleResetToDefault = () => {
-    if (window.confirm('Are you sure you want to reset all flowers to default? This will remove all your custom flowers and changes.')) {
-      loadDefaultFlowers();
-      showSuccess('Flowers reset to default successfully!');
-    }
-  };
-
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
@@ -293,16 +286,6 @@ const AdminFlowers = () => {
                 ))}
               </select>
 
-              {/* Reset Button */}
-              <button
-                onClick={handleResetToDefault}
-                className="bg-gray-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center"
-                title="Reset to default flowers"
-              >
-                <RotateCcw className="h-5 w-5 mr-2" />
-                Reset to Default
-              </button>
-
               {/* Add Button */}
               <button
                 onClick={() => setShowModal(true)}
@@ -340,7 +323,6 @@ const AdminFlowers = () => {
                       <th className="text-left py-3 px-6 font-semibold text-gray-700">Category</th>
                       <th className="text-left py-3 px-6 font-semibold text-gray-700">Price</th>
                       <th className="text-left py-3 px-6 font-semibold text-gray-700">Stock</th>
-                      <th className="text-left py-3 px-6 font-semibold text-gray-700">Status</th>
                       <th className="text-left py-3 px-6 font-semibold text-gray-700">Actions</th>
                     </tr>
                   </thead>
@@ -375,11 +357,6 @@ const AdminFlowers = () => {
                             'bg-red-100 text-red-800'
                           }`}>
                             {flower.stock}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold capitalize">
-                            {flower.status}
                           </span>
                         </td>
                         <td className="py-4 px-6">

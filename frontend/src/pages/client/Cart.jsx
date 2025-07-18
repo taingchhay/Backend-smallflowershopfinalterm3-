@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
 import { Minus, Plus, X, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
+  const [cartItems, setCartItems] = useState([]);
 
   const handleQuantityChange = (id, newQuantity) => {
     if (newQuantity < 1) {

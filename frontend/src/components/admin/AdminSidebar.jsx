@@ -11,7 +11,6 @@ const AdminSidebar = () => {
     { path: '/admin/orders', icon: ShoppingBag, label: 'Orders' },
     { path: '/admin/users', icon: Users, label: 'Users' },
     { path: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
-    { path: '/admin/settings', icon: Settings, label: 'Settings' },
   ];
 
   return (
