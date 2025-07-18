@@ -162,7 +162,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          {/* <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button className="bg-gradient-primary text-white p-6 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-200 text-center">
@@ -183,7 +183,7 @@ const AdminDashboard = () => {
                 <p className="text-sm opacity-90">Check performance metrics</p>
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

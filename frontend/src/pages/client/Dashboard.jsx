@@ -1,31 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { useCart } from '../../context/CartContext';
 import { ShoppingCart, Package, Heart, User, Star, TrendingUp } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user } = useAuth();
-  const { getTotalItems, getTotalPrice } = useCart();
 
   const stats = [
     {
       title: 'Cart Items',
-      value: getTotalItems(),
+      value: '0',
       icon: ShoppingCart,
       color: 'text-baby-pink-600',
       bg: 'bg-baby-pink-50'
     },
     {
       title: 'Cart Value',
-      value: `$${getTotalPrice().toFixed(2)}`,
+      value: '$0.00',
       icon: TrendingUp,
       color: 'text-green-600',
       bg: 'bg-green-50'
     },
     {
       title: 'Total Orders',
-      value: '12',
+      value: '0',
       icon: Package,
       color: 'text-blue-600',
       bg: 'bg-blue-50'
@@ -70,7 +66,7 @@ const Dashboard = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Welcome back, {user?.name}! 🌸
+              Welcome back! 🌸
             </h1>
             <p className="text-gray-600">
               Ready to brighten someone's day with beautiful flowers?

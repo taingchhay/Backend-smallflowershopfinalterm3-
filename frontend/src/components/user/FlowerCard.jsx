@@ -1,38 +1,89 @@
-import React, { useState } from 'react';
+/**
+ * Flower Card Component
+ *
+ * Displays individual flower products with cart and wishlist integration.
+ * Includes real-time stock checking and API integration.
+ *
+ * @author Flower Shop Team
+ * @version 2.0.0
+ */
+
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
-import { Plus, Heart, X, ShoppingCart, Zap, Star } from 'lucide-react';
+import { Plus, Heart, X, ShoppingCart, Zap, Star, AlertCircle } from 'lucide-react';
+import axios from 'axios';
 
 const FlowerCard = ({ flower }) => {
-  const { addToCart } = useCart();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
 
-  const handleAddToCart = () => {
-    addToCart(flower, quantity);
-    setShowModal(false);
-    setQuantity(1);
-    // Show success message
-    alert(`Added ${quantity} ${flower.name} to cart!`);
+  const handleAddToCart = async () => {
+
+    setAddingToCart(true);
+    try {
+      const success = await addToCart(flower, quantity);
+      if (success) {
+        setShowModal(false);
+        setQuantity(1);
+        // You could add a toast notification here instead of alert
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   const handleBuyNow = async () => {
-    // Add to cart first
-    addToCart(flower, quantity);
-    setShowModal(false);
-    setQuantity(1);
-    
-    // Small delay to ensure cart state is updated
-    setTimeout(() => {
-      navigate('/cart');
-    }, 100);
+    setAddingToCart(true);
+    try {
+      const success = await addToCart(flower, quantity);
+      if (success) {
+        setShowModal(false);
+        setQuantity(1);
+        navigate('/cart');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
-  const handleQuickAdd = (e) => {
+  const handleQuickAdd = async (e) => {
     e.stopPropagation();
-    addToCart(flower, 1);
-    alert(`Added ${flower.name} to cart!`);
+
+    setAddingToCart(true);
+    try {
+      await addToCart(flower, 1);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleWishlistToggle = async (e) => {
+    e.stopPropagation();
+
+    setWishlistLoading(true);
+    try {
+      if (isInWishlist) {
+        await wishlistAPI.removeFromWishlist(flower.id);
+        setIsInWishlist(false);
+      } else {
+        await wishlistAPI.addToWishlist(flower.id);
+        setIsInWishlist(true);
+      }
+    } catch (error) {
+      console.error('Error updating wishlist:', error);
+    } finally {
+      setWishlistLoading(false);
+    }
   };
 
   const openModal = (e) => {
@@ -45,6 +96,10 @@ const FlowerCard = ({ flower }) => {
     setQuantity(1);
   };
 
+  // Check if flower is available
+  const isAvailable = flower.status === 'active' && flower.stock > 0;
+  const isLowStock = flower.stock <= 5 && flower.stock > 0;
+
   return (
     <>
       <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 group">
@@ -54,15 +109,41 @@ const FlowerCard = ({ flower }) => {
             alt={flower.name}
             className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
           />
-          <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-baby-pink-50 transition-colors">
-            <Heart className="h-4 w-4 text-gray-600 hover:text-baby-pink-500" />
+          {/* Wishlist Button */}
+          <button
+            onClick={handleWishlistToggle}
+            disabled={wishlistLoading}
+            className={`absolute top-3 right-3 p-2 bg-white rounded-full shadow-md transition-colors ${
+              isInWishlist
+                ? 'text-red-500 hover:bg-red-50'
+                : 'text-gray-600 hover:bg-baby-pink-50 hover:text-baby-pink-500'
+            } ${wishlistLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-current' : ''}`} />
           </button>
+
+          {/* Category Badge */}
           <div className="absolute bottom-3 left-3 bg-baby-pink-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
             {flower.category || 'Bouquet'}
           </div>
+
+          {/* Sale Badge */}
           {flower.originalPrice && (
             <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
               SALE
+            </div>
+          )}
+
+          {/* Stock Status */}
+          {!isAvailable && (
+            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <span className="text-white font-semibold">Out of Stock</span>
+            </div>
+          )}
+
+          {isLowStock && isAvailable && (
+            <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+              Only {flower.stock} left
             </div>
           )}
         </div>
@@ -91,15 +172,29 @@ const FlowerCard = ({ flower }) => {
             <div className="flex space-x-2">
               <button
                 onClick={handleQuickAdd}
-                className="bg-baby-pink-100 text-baby-pink-600 p-2 rounded-full hover:bg-baby-pink-200 transition-colors"
-                title="Quick Add to Cart"
+                disabled={!isAvailable || addingToCart}
+                className={`p-2 rounded-full transition-colors ${
+                  isAvailable && !addingToCart
+                    ? 'bg-baby-pink-100 text-baby-pink-600 hover:bg-baby-pink-200'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+                title={isAvailable ? "Quick Add to Cart" : "Out of Stock"}
               >
-                <Plus className="h-4 w-4" />
+                {addingToCart ? (
+                  <div className="h-4 w-4 border-2 border-baby-pink-600 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Plus className="h-4 w-4" />
+                )}
               </button>
               <button
                 onClick={openModal}
-                className="bg-gradient-primary text-white p-2 rounded-full hover:shadow-lg transform hover:scale-110 transition-all duration-200"
-                title="View Details & Buy"
+                disabled={!isAvailable}
+                className={`p-2 rounded-full transition-all duration-200 ${
+                  isAvailable
+                    ? 'bg-gradient-primary text-white hover:shadow-lg transform hover:scale-110'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+                title={isAvailable ? "View Details & Buy" : "Out of Stock"}
               >
                 <ShoppingCart className="h-4 w-4" />
               </button>
@@ -209,19 +304,28 @@ const FlowerCard = ({ flower }) => {
                     <div className="flex items-center border border-gray-300 rounded-lg">
                       <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="px-3 py-2 hover:bg-gray-100 transition-colors"
+                        disabled={quantity <= 1 || addingToCart}
+                        className="px-3 py-2 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         -
                       </button>
                       <span className="px-4 py-2 font-semibold">{quantity}</span>
                       <button
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="px-3 py-2 hover:bg-gray-100 transition-colors"
+                        onClick={() => setQuantity(Math.min(flower.stock || 99, quantity + 1))}
+                        disabled={quantity >= (flower.stock || 99) || addingToCart}
+                        className="px-3 py-2 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         +
                       </button>
                     </div>
                   </div>
+
+                  {/* Stock Info */}
+                  {flower.stock && (
+                    <div className="text-sm text-gray-600">
+                      {flower.stock} in stock
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -229,19 +333,45 @@ const FlowerCard = ({ flower }) => {
               <div className="flex space-x-4">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-baby-pink-100 text-baby-pink-700 py-4 rounded-xl font-semibold hover:bg-baby-pink-200 transition-colors flex items-center justify-center space-x-2"
+                  disabled={!isAvailable || addingToCart}
+                  className={`flex-1 py-4 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2 ${
+                    isAvailable && !addingToCart
+                      ? 'bg-baby-pink-100 text-baby-pink-700 hover:bg-baby-pink-200'
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  }`}
                 >
-                  <ShoppingCart className="h-5 w-5" />
-                  <span>Add to Cart</span>
+                  {addingToCart ? (
+                    <div className="h-5 w-5 border-2 border-baby-pink-700 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <ShoppingCart className="h-5 w-5" />
+                  )}
+                  <span>{addingToCart ? 'Adding...' : 'Add to Cart'}</span>
                 </button>
                 <button
                   onClick={handleBuyNow}
-                  className="flex-1 bg-gradient-primary text-white py-4 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-2"
+                  disabled={!isAvailable || addingToCart}
+                  className={`flex-1 py-4 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2 ${
+                    isAvailable && !addingToCart
+                      ? 'bg-gradient-primary text-white hover:shadow-lg transform hover:scale-105'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
                 >
-                  <Zap className="h-5 w-5" />
-                  <span>Buy Now</span>
+                  {addingToCart ? (
+                    <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Zap className="h-5 w-5" />
+                  )}
+                  <span>{addingToCart ? 'Processing...' : 'Buy Now'}</span>
                 </button>
               </div>
+
+              {/* Out of Stock Message */}
+              {!isAvailable && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2">
+                  <AlertCircle className="h-5 w-5 text-red-500" />
+                  <span className="text-red-700 font-medium">This item is currently out of stock</span>
+                </div>
+              )}
 
               {/* Additional Info */}
               <div className="mt-6 pt-6 border-t border-gray-200">
