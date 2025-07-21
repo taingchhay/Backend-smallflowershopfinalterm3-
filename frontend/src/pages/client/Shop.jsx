@@ -19,7 +19,7 @@ const Shop = () => {
         price: 29.99,
         originalPrice: 39.99,
         category: 'roses',
-        image: 'https://images.pexels.com/photos/1164985/pexels-photo-1164985.jpeg?auto=compress&cs=tinysrgb&w=400',
+        image: 'https://theglasshouseflowers.com/cdn/shop/files/One-Dozen-Roses-2.jpg?v=1702952433',
         inStock: true
       },
       {
@@ -28,7 +28,7 @@ const Shop = () => {
         description: 'Bright and cheerful sunflowers to brighten any day',
         price: 24.99,
         category: 'sunflowers',
-        image: 'https://images.pexels.com/photos/1854652/pexels-photo-1854652.jpeg?auto=compress&cs=tinysrgb&w=400',
+        image: 'https://i.pinimg.com/736x/d3/ab/ad/d3abada9ee1470572c7f55047589a051.jpg',
         inStock: true
       },
       {
@@ -37,7 +37,7 @@ const Shop = () => {
         description: 'A beautiful arrangement of seasonal spring flowers',
         price: 34.99,
         category: 'mixed',
-        image: 'https://images.pexels.com/photos/1146603/pexels-photo-1146603.jpeg?auto=compress&cs=tinysrgb&w=400',
+        image: 'https://i.pinimg.com/736x/29/80/3c/29803ccbbc52584cef28600199d0ed8a.jpg',
         inStock: true
       },
       {
@@ -46,7 +46,7 @@ const Shop = () => {
         description: 'Elegant white lilies for special occasions',
         price: 42.99,
         category: 'lilies',
-        image: 'https://images.pexels.com/photos/1080696/pexels-photo-1080696.jpeg?auto=compress&cs=tinysrgb&w=400',
+        image: 'https://i.pinimg.com/736x/1c/d3/1a/1cd31aa3d7f82259a7f0376d77b59dad.jpg',
         inStock: true
       },
       {
@@ -64,7 +64,7 @@ const Shop = () => {
         description: 'Exotic purple orchid plant for home decoration',
         price: 55.99,
         category: 'orchids',
-        image: 'https://images.pexels.com/photos/1449087/pexels-photo-1449087.jpeg?auto=compress&cs=tinysrgb&w=400',
+        image: 'https://i.pinimg.com/736x/9e/f7/d0/9ef7d06e4d53d380bde0e78cae1f4e1e.jpg',
         inStock: true
       }
     ];
