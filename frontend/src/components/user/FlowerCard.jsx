@@ -10,7 +10,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Heart, X, ShoppingCart, Zap, Star, AlertCircle } from 'lucide-react';
+import { Plus, Heart, X, ShoppingCart, Zap, Star, AlertCircle, Eye } from 'lucide-react';
 import axios from 'axios';
 
 const FlowerCard = ({ flower }) => {
@@ -96,10 +96,6 @@ const FlowerCard = ({ flower }) => {
     setQuantity(1);
   };
 
-  // Check if flower is available
-  const isAvailable = flower.status === 'active' && flower.stock > 0;
-  const isLowStock = flower.stock <= 5 && flower.stock > 0;
-
   return (
     <>
       <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 group">
@@ -110,7 +106,7 @@ const FlowerCard = ({ flower }) => {
             className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
           />
           {/* Wishlist Button */}
-          <button
+          {/* <button
             onClick={handleWishlistToggle}
             disabled={wishlistLoading}
             className={`absolute top-3 right-3 p-2 bg-white rounded-full shadow-md transition-colors ${
@@ -120,7 +116,7 @@ const FlowerCard = ({ flower }) => {
             } ${wishlistLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-current' : ''}`} />
-          </button>
+          </button> */}
 
           {/* Category Badge */}
           <div className="absolute bottom-3 left-3 bg-baby-pink-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
@@ -135,17 +131,6 @@ const FlowerCard = ({ flower }) => {
           )}
 
           {/* Stock Status */}
-          {!isAvailable && (
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <span className="text-white font-semibold">Out of Stock</span>
-            </div>
-          )}
-
-          {isLowStock && isAvailable && (
-            <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-              Only {flower.stock} left
-            </div>
-          )}
         </div>
         
         <div className="p-4">
@@ -170,33 +155,30 @@ const FlowerCard = ({ flower }) => {
             </div>
             
             <div className="flex space-x-2">
-              <button
+              {/* <button
                 onClick={handleQuickAdd}
-                disabled={!isAvailable || addingToCart}
+                disabled={addingToCart}
                 className={`p-2 rounded-full transition-colors ${
-                  isAvailable && !addingToCart
+                  !addingToCart
                     ? 'bg-baby-pink-100 text-baby-pink-600 hover:bg-baby-pink-200'
                     : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
-                title={isAvailable ? "Quick Add to Cart" : "Out of Stock"}
+                title={"Quick Add to Cart"}
               >
                 {addingToCart ? (
                   <div className="h-4 w-4 border-2 border-baby-pink-600 border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <Plus className="h-4 w-4" />
                 )}
-              </button>
+              </button> */}
               <button
                 onClick={openModal}
-                disabled={!isAvailable}
                 className={`p-2 rounded-full transition-all duration-200 ${
-                  isAvailable
-                    ? 'bg-gradient-primary text-white hover:shadow-lg transform hover:scale-110'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    'bg-gradient-primary text-white hover:shadow-lg transform hover:scale-110'
                 }`}
-                title={isAvailable ? "View Details & Buy" : "Out of Stock"}
+                title={"View Details & Buy"}
               >
-                <ShoppingCart className="h-4 w-4" />
+                <Eye className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -333,9 +315,9 @@ const FlowerCard = ({ flower }) => {
               <div className="flex space-x-4">
                 <button
                   onClick={handleAddToCart}
-                  disabled={!isAvailable || addingToCart}
+                  disabled={addingToCart}
                   className={`flex-1 py-4 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2 ${
-                    isAvailable && !addingToCart
+                    !addingToCart
                       ? 'bg-baby-pink-100 text-baby-pink-700 hover:bg-baby-pink-200'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   }`}
@@ -349,9 +331,9 @@ const FlowerCard = ({ flower }) => {
                 </button>
                 <button
                   onClick={handleBuyNow}
-                  disabled={!isAvailable || addingToCart}
+                  disabled={addingToCart}
                   className={`flex-1 py-4 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2 ${
-                    isAvailable && !addingToCart
+                    !addingToCart
                       ? 'bg-gradient-primary text-white hover:shadow-lg transform hover:scale-105'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
@@ -366,12 +348,12 @@ const FlowerCard = ({ flower }) => {
               </div>
 
               {/* Out of Stock Message */}
-              {!isAvailable && (
+              {/* {!isAvailable && (
                 <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2">
                   <AlertCircle className="h-5 w-5 text-red-500" />
                   <span className="text-red-700 font-medium">This item is currently out of stock</span>
                 </div>
-              )}
+              )} */}
 
               {/* Additional Info */}
               <div className="mt-6 pt-6 border-t border-gray-200">

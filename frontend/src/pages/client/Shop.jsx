@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import FlowerCard from '../../components/user/FlowerCard';
 import { Search, Filter } from 'lucide-react';
+import axios from 'axios';
+
+const BASE_URL = 'http://localhost:3000';
 
 const Shop = () => {
   const [flowers, setFlowers] = useState([]);
@@ -9,67 +12,15 @@ const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
 
-  // Mock data - replace with API call
   useEffect(() => {
-    const mockFlowers = [
-      {
-        id: 1,
-        name: 'Red Rose Bouquet',
-        description: 'Beautiful red roses perfect for romantic occasions',
-        price: 29.99,
-        originalPrice: 39.99,
-        category: 'roses',
-        image: 'https://images.pexels.com/photos/1164985/pexels-photo-1164985.jpeg?auto=compress&cs=tinysrgb&w=400',
-        inStock: true
-      },
-      {
-        id: 2,
-        name: 'Sunflower Bundle',
-        description: 'Bright and cheerful sunflowers to brighten any day',
-        price: 24.99,
-        category: 'sunflowers',
-        image: 'https://images.pexels.com/photos/1854652/pexels-photo-1854652.jpeg?auto=compress&cs=tinysrgb&w=400',
-        inStock: true
-      },
-      {
-        id: 3,
-        name: 'Mixed Spring Flowers',
-        description: 'A beautiful arrangement of seasonal spring flowers',
-        price: 34.99,
-        category: 'mixed',
-        image: 'https://images.pexels.com/photos/1146603/pexels-photo-1146603.jpeg?auto=compress&cs=tinysrgb&w=400',
-        inStock: true
-      },
-      {
-        id: 4,
-        name: 'White Lily Arrangement',
-        description: 'Elegant white lilies for special occasions',
-        price: 42.99,
-        category: 'lilies',
-        image: 'https://images.pexels.com/photos/1080696/pexels-photo-1080696.jpeg?auto=compress&cs=tinysrgb&w=400',
-        inStock: true
-      },
-      {
-        id: 5,
-        name: 'Pink Tulip Bouquet',
-        description: 'Fresh pink tulips perfect for spring celebrations',
-        price: 27.99,
-        category: 'tulips',
-        image: 'https://cdn.uaeflowers.com/uploads/product/uaeflowers/8379_21_8379.webp',
-        inStock: true
-      },
-      {
-        id: 6,
-        name: 'Purple Orchid Plant',
-        description: 'Exotic purple orchid plant for home decoration',
-        price: 55.99,
-        category: 'orchids',
-        image: 'https://images.pexels.com/photos/1449087/pexels-photo-1449087.jpeg?auto=compress&cs=tinysrgb&w=400',
-        inStock: true
-      }
-    ];
-    setFlowers(mockFlowers);
-    setFilteredFlowers(mockFlowers);
+    const fetchFlowers = async () => {
+      const response = await axios.get(`${BASE_URL}/api/flower`);
+
+      setFlowers(response.data.data);
+      setFilteredFlowers(response.data.data);
+    };
+
+    fetchFlowers();
   }, []);
 
   // Filter and search logic
