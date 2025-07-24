@@ -50,7 +50,7 @@ const AdminFlowers = () => {
         price: 29.99,
         category: 'roses',
         stock: 25,
-        image: 'https://images.pexels.com/photos/1164985/pexels-photo-1164985.jpeg?auto=compress&cs=tinysrgb&w=400',
+        image: 'https://theglasshouseflowers.com/cdn/shop/files/One-Dozen-Roses-2.jpg?v=1702952433',
         status: 'active',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()

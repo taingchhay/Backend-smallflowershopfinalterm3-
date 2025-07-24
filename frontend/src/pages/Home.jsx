@@ -84,11 +84,17 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[1, 2, 3].map((i) => (
             <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <img
-                src={`https://images.pexels.com/photos/${i === 1 ? '1164985' : i === 2 ? '1854652' : '1146603'}/pexels-photo-${i === 1 ? '1164985' : i === 2 ? '1854652' : '1146603'}.jpeg?auto=compress&cs=tinysrgb&w=400`}
-                alt={`Featured flower ${i}`}
-                className="w-full h-48 object-cover"
-              />
+            <img
+              src={
+                i === 1
+                  ? "https://theglasshouseflowers.com/cdn/shop/files/One-Dozen-Roses-2.jpg?v=1702952433"
+                  : i === 2
+                  ? "https://i.pinimg.com/736x/d3/ab/ad/d3abada9ee1470572c7f55047589a051.jpg"
+                  : "https://i.pinimg.com/736x/29/80/3c/29803ccbbc52584cef28600199d0ed8a.jpg"
+              }
+              alt={`Featured flower ${i}`}
+              className="w-full h-48 object-cover"
+            />
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   {i === 1 ? 'Rose Bouquet' : i === 2 ? 'Sunflower Bundle' : 'Mixed Flowers'}
