@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, Eye, EyeOff, Flower2 } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, Flower2, Phone } from 'lucide-react';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+
+const BASE_URL = 'http://localhost:3000';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    phone: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -41,12 +45,14 @@ const Register = () => {
       return;
     }
 
-    const result = await register(formData);
+    const signup = await axios.post(`${BASE_URL}/api/auth/register`, formData);
     
-    if (result.success) {
-      navigate('/dashboard');
+    if (signup.data.success) {
+      toast.success('Signup successfully');
+      localStorage.setItem('accessToken', signup.data.token);
+      navigate('/');
     } else {
-      setError(result.error || 'Registration failed');
+      setError(signup.error || 'Registration failed');
     }
     
     setLoading(false);
@@ -83,10 +89,10 @@ const Register = () => {
                 </div>
                 <input
                   id="name"
-                  name="name"
+                  name="username"
                   type="text"
                   required
-                  value={formData.name}
+                  value={formData.username}
                   onChange={handleChange}
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-baby-pink-500 focus:border-baby-pink-500 transition-colors"
                   placeholder="Enter your full name"
@@ -111,6 +117,27 @@ const Register = () => {
                   onChange={handleChange}
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-baby-pink-500 focus:border-baby-pink-500 transition-colors"
                   placeholder="Enter your email"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Phone className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="phone"
+                  required
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-baby-pink-500 focus:border-baby-pink-500 transition-colors"
+                  placeholder="Enter your phone number"
                 />
               </div>
             </div>

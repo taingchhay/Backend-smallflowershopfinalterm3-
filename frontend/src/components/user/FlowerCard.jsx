@@ -12,6 +12,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Heart, X, ShoppingCart, Zap, Star, AlertCircle, Eye } from 'lucide-react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
+
+const BASE_URL = 'http://localhost:3000'
 
 const FlowerCard = ({ flower }) => {
   const navigate = useNavigate();
@@ -25,14 +29,20 @@ const FlowerCard = ({ flower }) => {
 
     setAddingToCart(true);
     try {
-      const success = await addToCart(flower, quantity);
-      if (success) {
+      const token = localStorage.getItem('accessToken');
+      const decode = jwtDecode(token);
+      const userId = decode.userId;
+
+      const response = await axios.post(`${BASE_URL}/api/cart`, { flower, quantity, userId });
+      console.log(response);
+      if (response.data.success) {
         setShowModal(false);
         setQuantity(1);
-        // You could add a toast notification here instead of alert
+        toast.success('Flower added to cart successfully');
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
+      toast.error('Error adding flower to cart');
     } finally {
       setAddingToCart(false);
     }
@@ -315,19 +325,10 @@ const FlowerCard = ({ flower }) => {
               <div className="flex space-x-4">
                 <button
                   onClick={handleAddToCart}
-                  disabled={addingToCart}
-                  className={`flex-1 py-4 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2 ${
-                    !addingToCart
-                      ? 'bg-baby-pink-100 text-baby-pink-700 hover:bg-baby-pink-200'
-                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  }`}
+                  className={`flex-1 py-4 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2`}
                 >
-                  {addingToCart ? (
-                    <div className="h-5 w-5 border-2 border-baby-pink-700 border-t-transparent rounded-full animate-spin" />
-                  ) : (
                     <ShoppingCart className="h-5 w-5" />
-                  )}
-                  <span>{addingToCart ? 'Adding...' : 'Add to Cart'}</span>
+                  <span>Add to Cart</span>
                 </button>
                 <button
                   onClick={handleBuyNow}

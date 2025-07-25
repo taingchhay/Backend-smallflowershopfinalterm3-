@@ -29,6 +29,8 @@ import sequelize from './config/sequelize.js';
 // Import routes
 import authRoutes from './routes/auth.routes.js';
 import flowerRoutes from './routes/flower.routes.js';
+import cartRoutes from './routes/cart.routes.js';
+import shippingAddressRoutes from './routes/shippingAddress.routes.js';
 
 // Load environment variables
 dotenv.config();
@@ -45,6 +47,8 @@ app.use(cors());
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/flower', flowerRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/shipping-addresses', shippingAddressRoutes);
 
 // Database connection and server startup
 async function startServer() {

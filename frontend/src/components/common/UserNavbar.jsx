@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Flower2, User, ShoppingCart, Menu, X, LogOut } from 'lucide-react';
+import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
-const UserNavbar = ({ user, logout }) => {
+const UserNavbar = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
 
-  const handleCartUpdate = (newCartItems) => {
-    setCartItems(newCartItems);
-    setTotalItems(newCartItems.reduce((acc, item) => acc + item.quantity, 0));
-    setTotalPrice(newCartItems.reduce((acc, item) => acc + item.price * item.quantity, 0));
-  };
+  useEffect(() => {
+    const fetchCartQuantity = async () => {
+      const token = localStorage.getItem('accessToken');
+      const decode = jwtDecode(token);
+      const id = decode.userId;
 
-  const getTotalItems = () => {
-    return cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  };
+      const response = await axios.get(`http://localhost:3000/api/cart/cart-quantity/${id}`);
+
+      if (response.data.success) {
+        setTotalItems(response.data.data);
+      }
+    };
+
+    fetchCartQuantity();
+  }, []);
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -27,7 +33,7 @@ const UserNavbar = ({ user, logout }) => {
   }, [location]);
 
   const handleLogout = () => {
-    logout();
+    localStorage.removeItem('accessToken');
     navigate('/');
   };
 
@@ -50,7 +56,7 @@ const UserNavbar = ({ user, logout }) => {
             <Link to="/cart" className="relative text-gray-700 hover:text-baby-pink-500 transition-colors">
               <ShoppingCart className="h-6 w-6" />
               <span className="absolute -top-2 -right-2 bg-baby-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {getTotalItems()}
+                {totalItems}
               </span>
             </Link>
 
@@ -64,6 +70,7 @@ const UserNavbar = ({ user, logout }) => {
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   <Link to="/dashboard" onClick={() => setIsProfileOpen(false)} className="block px-4 py-2 text-gray-700 hover:bg-baby-pink-50">Dashboard</Link>
                   <Link to="/orders" onClick={() => setIsProfileOpen(false)} className="block px-4 py-2 text-gray-700 hover:bg-baby-pink-50">My Orders</Link>
+                  <Link to="/shipping-address" onClick={() => setIsProfileOpen(false)} className="block px-4 py-2 text-gray-700 hover:bg-baby-pink-50">Shipping Address</Link>
                   <hr className="my-2" />
                   <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-gray-700 hover:bg-baby-pink-50">
                     <LogOut className="inline-block mr-2 h-4 w-4" />
@@ -87,7 +94,7 @@ const UserNavbar = ({ user, logout }) => {
               <Link to="/" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-baby-pink-500">Home</Link>
               <Link to="/shop" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-baby-pink-500">Shop</Link>
               <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-baby-pink-500">Dashboard</Link>
-              <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-baby-pink-500">Cart ({getTotalItems()})</Link>
+              <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="text-gray-700 hover:text-baby-pink-500">Cart ({totalItems})</Link>
               <button onClick={handleLogout} className="text-left text-gray-700 hover:text-baby-pink-500">Logout</button>
             </div>
           </div>
