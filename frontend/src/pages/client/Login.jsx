@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, Flower2 } from 'lucide-react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
+
+const BASE_URL = 'http://localhost:3000';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -24,11 +29,23 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    const login = await axios.post(`${BASE_URL}/api/auth/login`, formData);
     
-    if (result.success) {
-      navigate('/dashboard');
+    if (login.data.success) {
+      localStorage.setItem('accessToken', login.data.token);
+      const role = jwtDecode(login.data.token).role;
+      
+      if (role === 'customer') {
+        toast.success('Login Successfully');
+        navigate('/dashboard');
+      } else if (role === 'admin') {
+        toast.success('Welcome Admin');
+        navigate('/admin');
+      }
+
     } else {
-      setError(result.error || 'Login failed');
+      toast.error('Failed to login');
     }
     
     setLoading(false);

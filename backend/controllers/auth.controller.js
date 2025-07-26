@@ -24,8 +24,9 @@
 import models from '../models/index.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
-const { User } = models;
+dotenv.config();
 
 /**
  * Register a new user
@@ -70,7 +71,12 @@ export const register = async (req, res) => {
         }
 
         // Check if user already exists (using Sequelize syntax)
-        const existingUser = await User.findByIdentifier(email);
+        const existingUser = await models.User.findOne({
+            where: {
+                email: email
+            }
+        });
+
         if (existingUser) {
             return res.status(400).json({
                 message: 'User with this email already exists'
@@ -79,7 +85,7 @@ export const register = async (req, res) => {
 
         // Check username uniqueness if provided
         if (username) {
-            const existingUsername = await User.findOne({ where: { username: username.toLowerCase() } });
+            const existingUsername = await models.User.findOne({ where: { username: username.toLowerCase() } });
             if (existingUsername) {
                 return res.status(400).json({
                     message: 'Username already taken'
@@ -92,7 +98,7 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Create user (hooks will handle username generation if not provided)
-        const user = await User.create({
+        const user = await models.User.create({
             email,
             password: hashedPassword,
             phone,
@@ -106,12 +112,13 @@ export const register = async (req, res) => {
                 email: user.email,
                 role: user.role
             },
-            process.env.JWT_USER_SECRET || process.env.JWT_SECRET,
+            process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
         );
 
         // Return success response (exclude sensitive data)
         res.status(201).json({
+            success: true,
             message: 'User registered successfully',
             token
         });
@@ -173,17 +180,15 @@ export const login = async (req, res) => {
         }
 
         // Find user by email or username (using Sequelize syntax)
-        const user = await User.findByIdentifier(email);
+        const user = await models.User.findOne({
+            where: {
+                email: email
+            }
+        });
+
         if (!user) {
             return res.status(400).json({
                 message: 'Invalid email or password'
-            });
-        }
-
-        // Check if user account is active
-        if (!user.isActive()) {
-            return res.status(400).json({
-                message: 'Account is suspended or inactive. Please contact support.'
             });
         }
 
@@ -196,7 +201,7 @@ export const login = async (req, res) => {
         }
 
         // Update last login timestamp
-        await user.updateLastLogin();
+        // await user.updateLastLogin();
 
         // Generate JWT token
         const token = jwt.sign(
@@ -205,12 +210,13 @@ export const login = async (req, res) => {
                 email: user.email,
                 role: user.role
             },
-            process.env.JWT_USER_SECRET || process.env.JWT_SECRET,
+            process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
         );
 
         // Return success response
-        res.json({
+        res.status(200).json({
+            success: true,
             message: 'Login successful',
             token
         });

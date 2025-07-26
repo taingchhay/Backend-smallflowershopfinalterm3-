@@ -13,6 +13,9 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminFlowers from './pages/admin/AdminFlowers';
 import AdminOrders from './pages/admin/AdminOrders';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import Unauthorized from './pages/client/Unauthorized';
+import ShippingAddress from './pages/client/ShippingAddress';
+import Checkout from './pages/client/CheckOut';
 
 function App() {
   return (
@@ -26,6 +29,9 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/shop" element={<Shop />} />
+                <Route path="/shipping-address" element={<ShippingAddress />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
                 
                 {/* User Protected Routes */}
                 <Route path="/dashboard" element={
@@ -46,19 +52,19 @@ function App() {
                 
                 {/* Admin Protected Routes */}
                 <Route path="/admin" element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <AdminDashboard />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 } />
                 <Route path="/admin/flowers" element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <AdminFlowers />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 } />
                 <Route path="/admin/orders" element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <AdminOrders />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 } />
               </Routes>
             </main>

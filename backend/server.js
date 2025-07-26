@@ -25,15 +25,12 @@ import cors from 'cors';
 
 // Import database connection and models
 import sequelize from './config/sequelize.js';
-import models from './models/index.js';
 
 // Import routes
 import authRoutes from './routes/auth.routes.js';
 import flowerRoutes from './routes/flower.routes.js';
-import orderRoutes from './routes/order.routes.js';
-import addressRoutes from './routes/address.routes.js';
-import wishlistRoutes from './routes/wishlist.routes.js';
-import reviewRoutes from './routes/review.routes.js';
+import cartRoutes from './routes/cart.routes.js';
+import shippingAddressRoutes from './routes/shippingAddress.routes.js';
 
 // Load environment variables
 dotenv.config();
@@ -49,11 +46,9 @@ app.use(cors());
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/flowers', flowerRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/addresses', addressRoutes);
-app.use('/api/wishlist', wishlistRoutes);
-app.use('/api/reviews', reviewRoutes);
+app.use('/api/flower', flowerRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/shipping-addresses', shippingAddressRoutes);
 
 // Database connection and server startup
 async function startServer() {
